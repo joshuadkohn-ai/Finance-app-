@@ -1,160 +1,134 @@
-# MoneyMap 💰
+# J&E Capital
 
-A full-featured personal finance web app inspired by Monarch Money, YNAB, Copilot Money, and Quicken Simplifi.
+Personal finance dashboard for Josh & Elana — net worth tracking, paycheck allocation, budget, plan to retirement.
 
 ## Features
 
-- **Dashboard** — Net worth, cash flow charts, spending breakdown, upcoming bills, goal progress
-- **Accounts** — Track checking, savings, credit cards, investments, retirement, real estate, crypto, and more
-- **Transactions** — Full CRUD with search, filtering, bulk edit, categorization, and CSV export
-- **Budget** — Flexible or zero-based monthly budget with category planning and actuals
-- **Goals** — Savings, debt payoff, emergency fund, vacation, down payment, and more
-- **Recurring Bills** — Detect and manage subscriptions with calendar view
-- **Cash Flow** — 6-month income vs expense charts with projections
-- **Investments** — Portfolio tracking with allocation charts and gain/loss
-- **Debt** — Avalanche and snowball payoff calculators
-- **Reports** — Spending by category, cash flow history, monthly comparison, CSV export
-- **AI Assistant** — Natural language financial Q&A using your actual data
-- **Household** — Invite a partner or advisor with role-based access (Owner/Editor/Viewer)
-- **Settings** — Profile, notifications, CSV import, and security
+- **Dashboard** — Net worth hero with trend chart, Cash/Investments/Retirement breakdown, budget summary, millionaire milestone tracker
+- **Paycheck** — Enter a paycheck, set aside fixed expenses first, then manually allocate the rest across Roth IRAs, taxable brokerage, savings, or cash — with Roth contribution-room validation
+- **Budget** — 10 categories, spent vs budgeted bars, tap-to-edit numbers, auto-resets monthly
+- **Accounts** — 8 accounts grouped by Cash / Investments / Retirement with inline-editable balances
+- **Plan** — Roth YTD progress, compound-growth projection chart and age table, inflation-adjusted figures
+- **Settings** — Emergency fund target, Roth limit, VOO/QQQM/stocks split, return/inflation/age assumptions
 
 ## Tech Stack
 
-- **Next.js 16** (App Router, TypeScript)
+- **Next.js 16** (App Router, TypeScript, Server Actions)
 - **Tailwind CSS v4**
-- **Prisma 7 ORM** with PostgreSQL
-- **NextAuth v5** (credentials-based auth)
+- **Prisma 7** + PostgreSQL (Vercel Postgres in production, local Postgres in dev)
+- **NextAuth v5** (credentials, JWT sessions)
 - **Recharts** for charts
-- **Radix UI** primitives
-- **Zod** validation + **React Hook Form**
+- **Vitest** for unit tests
 
-## Quick Start
+---
 
-### 1. Prerequisites
+## Local Development
+
+### Prerequisites
 
 - Node.js 18+
-- PostgreSQL 14+
+- PostgreSQL (or use `DATABASE_URL` pointing to Vercel Postgres for local dev)
 
-### 2. Clone and install
+### 1. Install
 
 ```bash
-git clone <your-repo>
-cd Finance-app-
 npm install
 ```
 
-### 3. Configure environment
+### 2. Environment variables
 
-```bash
-cp .env.example .env
-```
-
-Edit `.env`:
+Create `.env.local`:
 
 ```env
-DATABASE_URL="postgresql://postgres:password@localhost:5432/moneymap"
-NEXTAUTH_SECRET="your-random-secret-min-32-chars"
-AUTH_SECRET="your-random-secret-min-32-chars"
-
-# Optional: AI Assistant (uses Claude Haiku)
-ANTHROPIC_API_KEY=""
-
-# Optional: Plaid (placeholder for future bank connection)
-PLAID_CLIENT_ID=""
-PLAID_SECRET=""
-PLAID_ENV="sandbox"
+DATABASE_URL="postgresql://postgres:password@localhost:5432/je_capital"
+AUTH_SECRET="generate-with: openssl rand -base64 32"
+JOSH_PASSWORD="choose-a-strong-password"
+ELANA_PASSWORD="choose-a-strong-password"
 ```
 
-### 4. Set up database
+### 3. Set up database
 
 ```bash
-# Run migrations
-npx prisma db push
+# Push schema to DB (creates tables)
+npm run db:push
 
-# Seed with realistic demo data
-npx ts-node --compiler-options '{"module":"CommonJS"}' prisma/seed.ts
+# Seed Josh & Elana users + default accounts/budget
+npm run db:seed
 ```
 
-### 5. Run the app
+### 4. Run
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
+Open [http://localhost:3000](http://localhost:3000) and sign in as:
 
-**Demo account:** `demo@moneymap.app` / `password123`
+- `josh@household.local` / your `JOSH_PASSWORD`
+- `elana@household.local` / your `ELANA_PASSWORD`
+
+### 5. Run unit tests
+
+```bash
+npm test
+```
 
 ---
 
-## Database Commands
+## Vercel Deployment
+
+### 1. Create a Vercel Postgres database
+
+In the Vercel dashboard: **Storage → Create Database → Postgres**. Copy the `DATABASE_URL` (connection pooling URL).
+
+### 2. Set environment variables in Vercel
+
+| Variable | Value |
+|---|---|
+| `DATABASE_URL` | Vercel Postgres connection string |
+| `AUTH_SECRET` | `openssl rand -base64 32` |
+| `JOSH_PASSWORD` | Strong password for Josh |
+| `ELANA_PASSWORD` | Strong password for Elana |
+
+### 3. Deploy
 
 ```bash
-npm run db:push       # Push schema to database
-npm run db:migrate    # Create a migration
-npm run db:seed       # Seed demo data
+# Install Vercel CLI if needed
+npm i -g vercel
+
+vercel deploy --prod
+```
+
+### 4. Run migrations + seed on Vercel
+
+```bash
+# Set DATABASE_URL locally to the Vercel Postgres URL, then:
+npm run db:push
+npm run db:seed
+```
+
+Or run from the Vercel dashboard under **Deployments → Functions → Run Command**.
+
+---
+
+## Database commands
+
+```bash
+npm run db:push       # Push schema changes (no migration files)
+npm run db:migrate    # Create + run a named migration
+npm run db:seed       # Seed default data
 npm run db:studio     # Open Prisma Studio
 ```
 
-## Project Structure
+---
 
-```
-src/
-├── app/
-│   ├── (auth)/           # Login, signup pages
-│   ├── (dashboard)/      # All protected app pages
-│   │   ├── dashboard/
-│   │   ├── accounts/
-│   │   ├── transactions/
-│   │   ├── budget/
-│   │   ├── goals/
-│   │   ├── recurring/
-│   │   ├── cashflow/
-│   │   ├── investments/
-│   │   ├── debt/
-│   │   ├── reports/
-│   │   ├── ai/
-│   │   ├── household/
-│   │   └── settings/
-│   └── api/              # REST API routes
-├── components/
-│   ├── ui/               # Reusable primitives (Button, Card, Dialog…)
-│   └── shared/           # Sidebar, Header, StatCard, EmptyState…
-├── lib/
-│   ├── auth.ts           # NextAuth configuration
-│   ├── prisma.ts         # Prisma client singleton
-│   ├── utils.ts          # Shared utilities + formatters
-│   └── constants.ts      # Category data, nav items, labels
-├── hooks/
-│   └── use-toast.ts      # Toast notification hook
-└── types/
-    └── index.ts          # Shared TypeScript types
-```
+## Adding Plaid later
 
-## Plaid Integration (Future)
+The data layer is intentionally clean for this. To add Plaid:
 
-The codebase is designed for Plaid integration. Look for `// placeholder for Plaid` comments in:
-- `src/app/api/accounts/route.ts` — `plaidAccountId` field
-- `src/app/api/transactions/route.ts` — `plaidTransactionId` field
-- `prisma/schema.prisma` — `FinancialAccount.plaidAccountId`
+1. Add `plaidAccountId` field to the `Account` model in `prisma/schema.prisma`
+2. Create `src/app/api/plaid/` route handlers (Link token, token exchange, balance sync)
+3. Replace the inline balance editing flow with Plaid Link for those accounts
+4. Keep the manual editing flow for accounts not linked to Plaid
 
-To add Plaid:
-1. Install `plaid` SDK
-2. Create `src/app/api/plaid/` routes (link token, exchange, sync)
-3. Replace manual account creation flow with Plaid Link widget
-
-## AI Assistant
-
-The AI assistant at `/ai` uses:
-- **With `ANTHROPIC_API_KEY`**: Claude Haiku for real AI responses
-- **Without key**: Mock responses showing financial data snippets
-
-The assistant receives a minimal context window (accounts, recent transactions, goals, budget) to keep API costs low.
-
-## Security Notes
-
-- Passwords hashed with bcrypt (cost factor 12)
-- Sessions managed by NextAuth JWT strategy
-- Bank credentials are never stored — use Plaid for real integrations
-- Role-based access: Owner > Editor > Viewer
-- Audit log table available for tracking important changes
+The `Account.bal` field is the source of truth — Plaid would just update it.

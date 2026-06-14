@@ -1,17 +1,13 @@
 "use client";
+
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { Map, Eye, EyeOff } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { C } from "@/lib/colors";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -30,44 +26,121 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-indigo-950 p-4">
-      <div className="w-full max-w-sm">
-        {/* Logo */}
-        <div className="flex flex-col items-center mb-8">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 mb-3">
-            <Map className="h-6 w-6 text-white" />
+    <div
+      style={{
+        background: C.bg,
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 16,
+        fontFamily: "system-ui, -apple-system, sans-serif",
+      }}
+    >
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600&display=swap');`}</style>
+      <div style={{ width: "100%", maxWidth: 360 }}>
+        <div style={{ textAlign: "center", marginBottom: 32 }}>
+          <div
+            style={{
+              fontFamily: "Fraunces, serif",
+              fontSize: 28,
+              fontWeight: 600,
+              color: C.text,
+              marginBottom: 6,
+            }}
+          >
+            J&amp;E <span style={{ color: C.em }}>Capital</span>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">MoneyMap</h1>
-          <p className="text-sm text-gray-500 mt-1">Sign in to your account</p>
+          <div style={{ fontSize: 14, color: C.mut }}>
+            Family finance dashboard
+          </div>
         </div>
 
-        <div className="rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-sm p-8">
-          <form onSubmit={submit} className="space-y-4">
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required autoComplete="email" className="mt-1" />
-            </div>
-            <div>
-              <Label htmlFor="password">Password</Label>
-              <div className="relative mt-1">
-                <Input id="password" type={showPw ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required autoComplete="current-password" />
-                <button type="button" onClick={() => setShowPw((s) => !s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                  {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
+        <div
+          style={{
+            background: C.card,
+            border: `1px solid ${C.line}`,
+            borderRadius: 16,
+            padding: 28,
+          }}
+        >
+          <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <label style={{ display: "block" }}>
+              <div style={{ fontSize: 12, color: C.mut, marginBottom: 6 }}>Email</div>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+                placeholder="josh@household.local"
+                style={{
+                  width: "100%",
+                  boxSizing: "border-box",
+                  background: C.bg,
+                  color: C.text,
+                  border: `1px solid ${C.line}`,
+                  borderRadius: 8,
+                  padding: "10px 12px",
+                  fontSize: 15,
+                }}
+              />
+            </label>
+
+            <label style={{ display: "block" }}>
+              <div style={{ fontSize: 12, color: C.mut, marginBottom: 6 }}>Password</div>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                autoComplete="current-password"
+                placeholder="••••••••"
+                style={{
+                  width: "100%",
+                  boxSizing: "border-box",
+                  background: C.bg,
+                  color: C.text,
+                  border: `1px solid ${C.line}`,
+                  borderRadius: 8,
+                  padding: "10px 12px",
+                  fontSize: 15,
+                }}
+              />
+            </label>
+
+            {error && (
+              <div
+                style={{
+                  fontSize: 13,
+                  color: C.red,
+                  background: `${C.red}18`,
+                  borderRadius: 8,
+                  padding: "8px 12px",
+                }}
+              >
+                {error}
               </div>
-            </div>
+            )}
 
-            {error && <p className="text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2">{error}</p>}
-
-            <Button type="submit" className="w-full" disabled={loading}>
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                background: loading ? C.line : C.em,
+                color: loading ? C.mut : "#06281C",
+                border: "none",
+                borderRadius: 10,
+                padding: "12px",
+                fontSize: 15,
+                fontWeight: 700,
+                cursor: loading ? "default" : "pointer",
+                marginTop: 4,
+              }}
+            >
               {loading ? "Signing in…" : "Sign in"}
-            </Button>
+            </button>
           </form>
-
-          <p className="mt-4 text-center text-sm text-gray-500">
-            Don&apos;t have an account?{" "}
-            <Link href="/signup" className="text-indigo-600 font-medium hover:underline">Sign up</Link>
-          </p>
         </div>
       </div>
     </div>
