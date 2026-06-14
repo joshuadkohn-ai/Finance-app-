@@ -111,7 +111,7 @@ export async function applyPaycheckPlan(
       data: { t: BigInt(Date.now()), nw: newNW, principal: newPrincipal },
     }),
     prisma.allocationLog.create({
-      data: { t: BigInt(Date.now()), amt, steps: steps as unknown as import("@prisma/client").Prisma.InputJsonValue },
+      data: { t: BigInt(Date.now()), amt, steps: JSON.parse(JSON.stringify(steps)) },
     }),
   ]);
 

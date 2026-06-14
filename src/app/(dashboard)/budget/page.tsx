@@ -38,7 +38,7 @@ export default async function BudgetPage() {
         <span>Budgeted {fmt(budTotal)}</span>
       </div>
       <Bar
-        pct={(spentTotal / budTotal) * 100}
+        pct={budTotal > 0 ? (spentTotal / budTotal) * 100 : 0}
         color={spentTotal > budTotal ? C.red : C.em}
       />
       <div style={{ marginTop: 18 }}>
@@ -71,7 +71,7 @@ export default async function BudgetPage() {
               </span>
             </div>
             <Bar
-              pct={(b.spent / b.amt) * 100}
+              pct={b.amt > 0 ? (b.spent / b.amt) * 100 : 0}
               color={b.spent > b.amt ? C.red : C.em}
             />
           </div>

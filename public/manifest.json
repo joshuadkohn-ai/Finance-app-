@@ -2,7 +2,7 @@
   "name": "J&E Capital",
   "short_name": "J&E Capital",
   "description": "Family finance dashboard for Josh & Elana",
-  "start_url": "/dashboard",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#0D1117",
   "theme_color": "#0D1117",

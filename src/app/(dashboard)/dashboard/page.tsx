@@ -1,5 +1,5 @@
 import { getFullState } from "@/lib/db";
-import { computeMilestones, buildProjChart } from "@/lib/engine";
+import { computeMilestones } from "@/lib/engine";
 import NetWorthCard from "@/components/dashboard/NetWorthCard";
 import BreakdownCard from "@/components/dashboard/BreakdownCard";
 import BudgetSummaryCard from "@/components/dashboard/BudgetSummaryCard";

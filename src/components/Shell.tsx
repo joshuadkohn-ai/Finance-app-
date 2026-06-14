@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { C } from "@/lib/colors";
 
@@ -21,7 +21,6 @@ interface ShellProps {
 
 export default function Shell({ children, userName }: ShellProps) {
   const pathname = usePathname();
-  const router = useRouter();
   const monthName = new Date().toLocaleDateString(undefined, {
     month: "long",
     year: "numeric",
@@ -36,7 +35,6 @@ export default function Shell({ children, userName }: ShellProps) {
         fontFamily: "system-ui, -apple-system, sans-serif",
       }}
     >
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600&display=swap');`}</style>
       <div style={{ maxWidth: 960, margin: "0 auto", padding: "22px 16px 80px" }}>
         {/* Header */}
         <div
