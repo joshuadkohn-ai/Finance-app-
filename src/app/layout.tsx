@@ -1,24 +1,26 @@
-import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { Toaster } from "@/components/ui/toaster";
 import { SessionProvider } from "next-auth/react";
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-geist-sans" });
-
 export const metadata: Metadata = {
-  title: "MoneyMap — Personal Finance Dashboard",
-  description: "Track your net worth, budget, goals, and spending — all in one place.",
+  title: "J&E Capital",
+  description: "Personal finance dashboard for Josh & Elana",
+  manifest: "/manifest.json",
+  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "J&E Capital" },
+  icons: { apple: "/icon.svg" },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0D1117",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${geist.variable} h-full antialiased`}>
-      <body className="h-full bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-white font-sans">
-        <SessionProvider>
-          {children}
-          <Toaster />
-        </SessionProvider>
+    <html lang="en">
+      <body>
+        <SessionProvider>{children}</SessionProvider>
       </body>
     </html>
   );
